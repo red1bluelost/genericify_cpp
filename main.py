@@ -4,6 +4,9 @@ import sys
 
 from typing import Optional
 
+import datasets
+import evaluate
+
 
 @dataclasses.dataclass
 class Arguments:
@@ -45,6 +48,7 @@ def parse_args() -> Arguments:
         "--model",
         required=True,
         type=str,
+        choices=["codellama", "deepseek", "starcoder"],
         help="Model to evaluate, provide a repo name in Hugging Face hub or a local path",
     )
     parser.add_argument(
@@ -82,6 +86,22 @@ def parse_args() -> Arguments:
 
 def main() -> int:
     args: Arguments = parse_args()
+
+    # Set up model
+
+    # Load in dataset
+    test = datasets.load_dataset("red1bluelost/dataset_genericify_cpp")["test"]
+
+    # Generate samples for each prompt
+    # * Checkpoint during the process (maybe)
+
+    # Generate evaluation metrics
+    code_metric = evaluate.load("red1bluelost/evaluate_genericify_cpp")
+
+    # Emit metrics
+    # * Print
+    # * Save to file
+
     print(f"hello world {args}")
     return 0
 
