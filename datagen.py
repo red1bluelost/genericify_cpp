@@ -164,16 +164,6 @@ def gen_loop(out, hep, start: int, count: int):
                 ["clang-format", "-i", "-style=Google", invalids_path]
             )
 
-            while (resp := input(COMMANDS_MESSAGE).strip()) not in COMMANDS:
-                pass
-            match resp:
-                case "exit":
-                    return
-                case "skip":
-                    continue
-                case _:
-                    pass
-
             gdoc = dict(
                 task_id=f"HEP/{idx}",
                 base_prompt=read(base_prompt_path),
