@@ -172,7 +172,7 @@ def gen_loop(out, hep, start: int, count: int):
                 base_prompt=read(base_prompt_path),
                 sfinae_prompt=read(sfinae_prompt_path),
                 concepts_prompt=read(concepts_prompt_path),
-                starter_code=starter_code,
+                starter_code=read(starter_path),
                 base_canonical_solution=read(base_path),
                 sfinae_canonical_solution=read(sfinae_path),
                 concepts_canonical_solution=read(concepts_path),
