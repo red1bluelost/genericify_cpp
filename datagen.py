@@ -129,6 +129,13 @@ def gen_loop(out, hep, start: int, count: int):
             write(tests_path, test)
             write(invalids_path, EMPTY_MAIN)
 
+            subprocess.check_call(
+                ["clang-format", "-i", "-style=Google", tests_path]
+            )
+            subprocess.check_call(
+                ["clang-format", "-i", "-style=Google", invalids_path]
+            )
+
             print(f"Please edit sfinae code: {sfinae_path}")
             print(f"Please edit sfinae prompt: {sfinae_prompt_path}")
             print(f"Please edit concepts code: {concepts_path}")
