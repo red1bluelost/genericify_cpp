@@ -25,7 +25,7 @@ COMMANDS_MESSAGE = (
 
 EMPTY_MAIN = "int main() {}"
 
-STD_NAME_RE = re.compile(r"([^\w_])(string|vector|map|abs)([^\w_])")
+STD_NAME_RE = re.compile(r"([^\w_]|^)(string|vector|map|abs)([^\w_])")
 
 
 def write(path, content):
@@ -68,6 +68,8 @@ def gen_loop(out, hep, start: int, count: int):
             sfinae_prompt_path = os.path.join(td, "sfinae_prompt.txt")
             concepts_prompt_path = os.path.join(td, "concepts_prompt.txt")
 
+            starter_path = os.path.join(td, "starter.cpp")
+
             base_path = os.path.join(td, "base.cpp")
             sfinae_path = os.path.join(td, "sfinae.cpp")
             concepts_path = os.path.join(td, "concepts.cpp")
@@ -77,11 +79,28 @@ def gen_loop(out, hep, start: int, count: int):
 
             code = strip_code(code)
             code = add_std(code)
-            write(base_path, code)
+            write(starter_path, code)
             subprocess.check_call(
-                ["clang-format", "-i", "-style=Google", base_path]
+                ["clang-format", "-i", "-style=Google", starter_path]
             )
 
+            print(f"Please fix up starter code: {starter_path}")
+            while (resp := input(COMMANDS_MESSAGE).strip()) not in COMMANDS:
+                pass
+            match resp:
+                case "exit":
+                    return
+                case "skip":
+                    continue
+                case _:
+                    pass
+
+            subprocess.check_call(
+                ["clang-format", "-i", "-style=Google", starter_path]
+            )
+            starter_code = read(starter_path)
+
+            write(base_path, starter_code)
             write(base_prompt_path, BASE_PROMPT_PREFIX)
 
             print(f"Please edit base code: {base_path}")
@@ -99,10 +118,10 @@ def gen_loop(out, hep, start: int, count: int):
             subprocess.check_call(
                 ["clang-format", "-i", "-style=Google", base_path]
             )
-            starter_code = read(base_path)
+            base_code = read(base_path)
 
-            write(sfinae_path, starter_code)
-            write(concepts_path, starter_code)
+            write(sfinae_path, base_code)
+            write(concepts_path, base_code)
 
             write(sfinae_prompt_path, SFINAE_PROMPT_PREFIX)
             write(concepts_prompt_path, CONCEPTS_PROMPT_PREFIX)
